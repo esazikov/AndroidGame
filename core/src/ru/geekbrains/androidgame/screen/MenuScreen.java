@@ -8,7 +8,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
+import ru.geekbrains.androidgame.AirCraft;
 import ru.geekbrains.androidgame.Background;
+import ru.geekbrains.androidgame.Exit;
 import ru.geekbrains.androidgame.base.BaseScreen;
 import ru.geekbrains.androidgame.math.Rect;
 
@@ -18,7 +20,14 @@ public class MenuScreen extends BaseScreen {
     Texture bg;
     Vector2 posBg;
 
-    Vector2 velocity;
+    Exit exit;
+    Texture ex;
+    Vector2 posEx;
+
+    AirCraft airCraft;
+    Texture air;
+    Vector2 posAir;
+
 
     public MenuScreen(Game game) {
         super(game);
@@ -31,7 +40,13 @@ public class MenuScreen extends BaseScreen {
         posBg = new Vector2(0f, 0f);
         background = new Background(new TextureRegion(bg));
 
-        velocity = new Vector2(0f, 0f);
+        ex = new Texture("exit.png");
+        posEx = new Vector2(0f, 0f);
+        exit = new Exit(new TextureRegion(ex));
+
+        air = new Texture("aircraft_small.jpg");
+        posAir = new Vector2(0f, 0f);
+        airCraft = new AirCraft(new TextureRegion(air));
     }
 
     @Override
@@ -41,26 +56,36 @@ public class MenuScreen extends BaseScreen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
         background.draw(batch);
+        exit.draw(batch);
+        airCraft.draw(batch);
         batch.end();
-        // position.add(velocity);
     }
 
     @Override
     protected void resize(Rect worldBounds) {
         background.resize(worldBounds);
+        exit.resize(worldBounds);
+        airCraft.resize(worldBounds);
     }
 
     @Override
     public void dispose() {
         bg.dispose();
+        ex.dispose();
+        air.dispose();
         super.dispose();
     }
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-
-
         return super.touchDown(screenX, screenY, pointer, button);
+    }
+
+    @Override
+    public boolean touchDown(Vector2 touch, int pointer) {
+        airCraft.touchDown(touch, pointer);
+        exit.touchDown(touch, pointer);
+        return super.touchDown(touch, pointer);
     }
 }
 
