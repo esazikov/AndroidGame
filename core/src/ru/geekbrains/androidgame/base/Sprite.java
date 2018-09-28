@@ -15,6 +15,10 @@ public class Sprite extends Rect {
     protected TextureRegion[] regions;
     protected int frame;
 
+    private boolean isDestroyed;
+
+    public Sprite() {}
+
     public Sprite(TextureRegion region) {
         if (region == null) {
             throw new NullPointerException("region == null");
@@ -82,5 +86,17 @@ public class Sprite extends Rect {
                 scale, scale, // масштаб по x и y
                 angle // угол поворота
         );
+    }
+
+    public void destroy() {
+        this.isDestroyed = true;
+    }
+
+    public void flushDestroy() {
+        this.isDestroyed = false;
+    }
+
+    public boolean isDestroyed() {
+        return isDestroyed;
     }
 }

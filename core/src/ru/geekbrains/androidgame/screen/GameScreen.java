@@ -2,6 +2,7 @@ package ru.geekbrains.androidgame.screen;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -12,6 +13,7 @@ import java.util.Random;
 
 import ru.geekbrains.androidgame.base.BaseScreen;
 import ru.geekbrains.androidgame.math.Rect;
+import ru.geekbrains.androidgame.pool.BulletPool;
 import ru.geekbrains.androidgame.sprites.AirCraft;
 import ru.geekbrains.androidgame.sprites.Background;
 import ru.geekbrains.androidgame.sprites.Cloud;
@@ -26,11 +28,14 @@ public class GameScreen extends BaseScreen {
     Texture bg;
     TextureAtlas atlas;
     AirCraft airCraft;
+    BulletPool bulletPool;
 
 
     Cloud[] cloud;
     TextureRegion[] cloudTextures;
     Random random = new Random();
+
+    Music musicGame = Gdx.audio.newMusic(Gdx.files.internal("sound/game.mp3"));
 
     public GameScreen(Game game) {
         super(game);
@@ -47,7 +52,9 @@ public class GameScreen extends BaseScreen {
         for (int i = 0; i < cloud.length; i++) {
             cloud[i] = new Cloud(cloudTextures[random.nextInt(4)]);
         }
-        airCraft = new AirCraft(atlas);
+        bulletPool = new BulletPool();
+        airCraft = new AirCraft(atlas, bulletPool);
+        musicGame.play();
     }
 
     @Override
@@ -64,6 +71,7 @@ public class GameScreen extends BaseScreen {
             cloud[i].update(delta);
         }
         airCraft.update(delta);
+        bulletPool.updateActiveObjects(delta);
     }
 
     public void checkCollisions() {
@@ -71,6 +79,7 @@ public class GameScreen extends BaseScreen {
     }
 
     public void deleteAllDestroyed() {
+        bulletPool.freeAllDestroyedActiveObjects();
 
     }
 
@@ -83,6 +92,7 @@ public class GameScreen extends BaseScreen {
             cloud[i].draw(batch);
         }
         airCraft.draw(batch);
+        bulletPool.drawActiveObjects(batch);
         batch.end();
     }
 
@@ -100,6 +110,9 @@ public class GameScreen extends BaseScreen {
     public void dispose() {
         bg.dispose();
         atlas.dispose();
+        bulletPool.dispose();
+        airCraft.dispose();
+        musicGame.dispose();
         super.dispose();
     }
 

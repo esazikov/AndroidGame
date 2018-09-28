@@ -2,6 +2,7 @@ package ru.geekbrains.androidgame.screen;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.TextureData;
@@ -36,6 +37,8 @@ public class MenuScreen extends BaseScreen implements ActionListener{
     TextureRegion[] cloudTextures;
     Random random = new Random();
 
+    Music musicMenu = Gdx.audio.newMusic(Gdx.files.internal("sound/menu.mp3"));
+
 
     public MenuScreen(Game game) {
         super(game);
@@ -54,6 +57,7 @@ public class MenuScreen extends BaseScreen implements ActionListener{
         for (int i = 0; i < cloud.length; i++) {
             cloud[i] = new Cloud(cloudTextures[random.nextInt(4)]);
         }
+        musicMenu.play();
     }
 
     @Override
@@ -96,6 +100,7 @@ public class MenuScreen extends BaseScreen implements ActionListener{
     public void dispose() {
         bg.dispose();
         atlas.dispose();
+        musicMenu.dispose();
         super.dispose();
     }
 

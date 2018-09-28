@@ -3,24 +3,24 @@ mainAtlas.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-map
-  rotate: false
-  xy: 1, 1
-  size: 940, 940
-  orig: 940, 940
-  offset: 0, 0
-  index: -1
 cloud
   rotate: false
-  xy: 943, 261
+  xy: 1, 303
   size: 290, 680
   orig: 290, 680
   offset: 0, 0
   index: -1
 aircraft
   rotate: false
-  xy: 1235, 641
+  xy: 1, 1
   size: 390, 300
   orig: 390, 300
+  offset: 0, 0
+  index: -1
+bullet
+  rotate: false
+  xy: 293, 833
+  size: 34, 150
+  orig: 34, 150
   offset: 0, 0
   index: -1
