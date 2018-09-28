@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 import ru.geekbrains.androidgame.math.Rect;
+import ru.geekbrains.androidgame.utils.Regions;
 
 public class Sprite extends Rect {
 
@@ -22,10 +23,20 @@ public class Sprite extends Rect {
         regions[0] = region;
     }
 
+    public Sprite (TextureRegion region, int rows, int cols, int frames) {
+        this.regions = Regions.split(region, rows, cols, frames);
+    }
+
     public void setHeightProportion(float height) {
         setHeight(height);
         float aspect = regions[frame].getRegionWidth() / (float) regions[frame].getRegionHeight();
         setWidth(height * aspect);
+    }
+
+    public void setWidhtProportion(float width) {
+        setWidth(width);
+        float aspect = regions[frame].getRegionHeight() / (float) regions[frame].getRegionWidth();
+        setHeight(width * aspect);
     }
 
     public void resize(Rect worldBounds) {

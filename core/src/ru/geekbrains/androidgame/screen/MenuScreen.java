@@ -4,29 +4,37 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.TextureData;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
-import ru.geekbrains.androidgame.AirCraft;
-import ru.geekbrains.androidgame.Background;
-import ru.geekbrains.androidgame.Exit;
+import java.util.Random;
+
+import ru.geekbrains.androidgame.sprites.AirCraft;
+import ru.geekbrains.androidgame.base.ActionListener;
+import ru.geekbrains.androidgame.sprites.Background;
 import ru.geekbrains.androidgame.base.BaseScreen;
 import ru.geekbrains.androidgame.math.Rect;
+import ru.geekbrains.androidgame.sprites.ButtonExit;
+import ru.geekbrains.androidgame.sprites.ButtonPlay;
+import ru.geekbrains.androidgame.sprites.Cloud;
+import ru.geekbrains.androidgame.utils.Regions;
 
-public class MenuScreen extends BaseScreen {
+public class MenuScreen extends BaseScreen implements ActionListener{
+
+    private static final int CLOUD_COUNT = 48;
 
     Background background;
     Texture bg;
-    Vector2 posBg;
+    TextureAtlas atlas;
 
-    Exit exit;
-    Texture ex;
-    Vector2 posEx;
+    ButtonExit buttonExit;
+    ButtonPlay buttonPlay;
 
-    AirCraft airCraft;
-    Texture air;
-    Vector2 posAir;
+    Cloud[] cloud;
+    TextureRegion[] cloudTextures;
+    Random random = new Random();
 
 
     public MenuScreen(Game game) {
@@ -36,56 +44,82 @@ public class MenuScreen extends BaseScreen {
     @Override
     public void show() {
         super.show();
-        bg = new Texture("map.jpg");
-        posBg = new Vector2(0f, 0f);
+        atlas = new TextureAtlas("textures/menuAtlas.pack");
+        bg = new Texture("map.png");
         background = new Background(new TextureRegion(bg));
-
-        ex = new Texture("exit.png");
-        posEx = new Vector2(0f, 0f);
-        exit = new Exit(new TextureRegion(ex));
-
-        air = new Texture("aircraft_small.jpg");
-        posAir = new Vector2(0f, 0f);
-        airCraft = new AirCraft(new TextureRegion(air));
+        buttonExit = new ButtonExit(atlas, this);
+        buttonPlay = new ButtonPlay(atlas, this);
+        cloud = new Cloud[CLOUD_COUNT];
+        cloudTextures = Regions.split(atlas.findRegion("cloud"),4,1,4);
+        for (int i = 0; i < cloud.length; i++) {
+            cloud[i] = new Cloud(cloudTextures[random.nextInt(4)]);
+        }
     }
 
     @Override
     public void render(float delta) {
         super.render(delta);
-        Gdx.gl.glClearColor(0, 0, 0, 1);
+        update(delta);
+        draw();
+    }
+
+    public void update(float delta) {
+        for (int i = 0; i < cloud.length; i++) {
+            cloud[i].update(delta);
+        }
+    }
+
+    public void draw() {
+        Gdx.gl.glClearColor(1, 0.4f, 0.6f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
         background.draw(batch);
-        exit.draw(batch);
-        airCraft.draw(batch);
+        for (int i = 0; i < cloud.length; i++) {
+            cloud[i].draw(batch);
+        }
+        buttonExit.draw(batch);
+        buttonPlay.draw(batch);
         batch.end();
     }
 
     @Override
     protected void resize(Rect worldBounds) {
         background.resize(worldBounds);
-        exit.resize(worldBounds);
-        airCraft.resize(worldBounds);
+        for (int i = 0; i < cloud.length; i++) {
+            cloud[i].resize(worldBounds);
+        }
+        buttonExit.resize(worldBounds);
+        buttonPlay.resize(worldBounds);
     }
 
     @Override
     public void dispose() {
         bg.dispose();
-        ex.dispose();
-        air.dispose();
+        atlas.dispose();
         super.dispose();
     }
 
     @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        return super.touchDown(screenX, screenY, pointer, button);
+    public boolean touchDown(Vector2 touch, int pointer) {
+        buttonExit.touchDown(touch, pointer);
+        buttonPlay.touchDown(touch, pointer);
+        return super.touchDown(touch, pointer);
     }
 
     @Override
-    public boolean touchDown(Vector2 touch, int pointer) {
-        airCraft.touchDown(touch, pointer);
-        exit.touchDown(touch, pointer);
-        return super.touchDown(touch, pointer);
+    public boolean touchUp(Vector2 touch, int pointer) {
+        buttonExit.touchUp(touch, pointer);
+        buttonPlay.touchUp(touch, pointer);
+        return super.touchUp(touch, pointer);
+    }
+
+    @Override
+    public void actionPerformed(Object src) {
+        if (src == buttonExit) {
+            Gdx.app.exit();
+        } else if (src == buttonPlay) {
+            game.setScreen(new GameScreen(game));
+        }
     }
 }
 
