@@ -6,12 +6,11 @@ import ru.geekbrains.androidgame.base.ActionListener;
 import ru.geekbrains.androidgame.base.ScaledTouchUpButton;
 import ru.geekbrains.androidgame.math.Rect;
 
-public class ButtonExit extends ScaledTouchUpButton {
+public class ButtonNewGame extends ScaledTouchUpButton {
 
-    public ButtonExit(TextureAtlas atlas, ActionListener actionListener) {
-
-        super(atlas.findRegion("exit"), actionListener, 0.9f);
-        setWidhtProportion(0.15f);
+    public ButtonNewGame (TextureAtlas atlas, ActionListener actionListener) {
+        super(atlas.findRegion("btn_new_game"), actionListener, 0.9f);
+        setHeightProportion(0.15f);
     }
 
     @Override

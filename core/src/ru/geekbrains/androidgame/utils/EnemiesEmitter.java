@@ -13,21 +13,21 @@ import ru.geekbrains.androidgame.sprites.Enemy;
 public class EnemiesEmitter {
 
     private static final float ENEMY_SMALL_HEIGHT = 0.15f;
-    private static final float ENEMY_SMALL_BULLET_HEIGHT = 0.05f;
+    private static final float ENEMY_SMALL_BULLET_HEIGHT = 0.035f;
     private static final float ENEMY_SMALL_BULLET_VY = - 0.3f;
     private static final int ENEMY_SMALL_BULLET_DAMAGE = 1;
     private static final float ENEMY_SMALL_RELOAD_INTERVAL = 3f;
     private static final int ENEMY_SMALL_HP = 1;
 
     private static final float ENEMY_MEDIUM_HEIGHT = 0.15f;
-    private static final float ENEMY_MEDIUM_BULLET_HEIGHT = 0.035f;
+    private static final float ENEMY_MEDIUM_BULLET_HEIGHT = 0.045f;
     private static final float ENEMY_MEDIUM_BULLET_VY = - 0.25f;
     private static final int ENEMY_MEDIUM_BULLET_DAMAGE = 5;
     private static final float ENEMY_MEDIUM_RELOAD_INTERVAL = 4f;
     private static final int ENEMY_MEDIUM_HP = 5;
 
     private static final float ENEMY_BIG_HEIGHT = 0.15f;
-    private static final float ENEMY_BIG_BULLET_HEIGHT = 0.04f;
+    private static final float ENEMY_BIG_BULLET_HEIGHT = 0.055f;
     private static final float ENEMY_BIG_BULLET_VY = - 0.3f;
     private static final int ENEMY_BIG_BULLET_DAMAGE = 10;
     private static final float ENEMY_BIG_RELOAD_INTERVAL = 3f;
@@ -37,9 +37,9 @@ public class EnemiesEmitter {
     private final TextureRegion[] enemyMediumRegion;
     private final TextureRegion[] enemyBigRegion;
 
-    private final Vector2 enemySmallV = new Vector2(0f, -0.2f);
-    private final Vector2 enemyMediumV = new Vector2(0f, -0.1f);
-    private final Vector2 enemyBigV = new Vector2(0f, -0.05f);
+    private final Vector2 enemySmallV = new Vector2(0f, -0.1f);
+    private final Vector2 enemyMediumV = new Vector2(0f, -0.07f);
+    private final Vector2 enemyBigV = new Vector2(0f, -0.02f);
 
     private final EnemyPool enemyPool;
 
@@ -71,15 +71,15 @@ public class EnemiesEmitter {
             if (type < 0.5f) {
             enemy.set(enemySmallRegion, enemySmallV, bulletRegion, ENEMY_SMALL_BULLET_HEIGHT,
                     ENEMY_SMALL_BULLET_VY, ENEMY_SMALL_BULLET_DAMAGE, ENEMY_SMALL_RELOAD_INTERVAL,
-                    ENEMY_SMALL_HEIGHT, ENEMY_SMALL_HP);
+                    ENEMY_SMALL_HEIGHT, ENEMY_SMALL_HP, worldBounds);
             } else if (type < 0.8f) {
                 enemy.set(enemyMediumRegion, enemyMediumV, bulletRegion, ENEMY_MEDIUM_BULLET_HEIGHT,
                         ENEMY_MEDIUM_BULLET_VY, ENEMY_MEDIUM_BULLET_DAMAGE, ENEMY_MEDIUM_RELOAD_INTERVAL,
-                        ENEMY_MEDIUM_HEIGHT, ENEMY_MEDIUM_HP);
+                        ENEMY_MEDIUM_HEIGHT, ENEMY_MEDIUM_HP, worldBounds);
             } else {
                 enemy.set(enemyBigRegion, enemyBigV, bulletRegion, ENEMY_BIG_BULLET_HEIGHT,
                         ENEMY_BIG_BULLET_VY, ENEMY_BIG_BULLET_DAMAGE, ENEMY_BIG_RELOAD_INTERVAL,
-                        ENEMY_BIG_HEIGHT, ENEMY_BIG_HP);
+                        ENEMY_BIG_HEIGHT, ENEMY_BIG_HP, worldBounds);
             }
 
             enemy.pos.x = Rnd.nextFloat(worldBounds.getLeft() + enemy.getHalfWidth(), worldBounds.getRight() - enemy.getHalfWidth());

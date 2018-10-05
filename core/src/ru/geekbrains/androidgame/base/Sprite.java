@@ -78,14 +78,16 @@ public class Sprite extends Rect {
     }
 
     public void draw(SpriteBatch batch) {
-        batch.draw(
-                regions[frame],
-                getLeft(), getBottom(), // точка отрисовки
-                halfWidth, halfHeight, // точка вращения
-                getWidth(), getHeight(),
-                scale, scale, // масштаб по x и y
-                angle // угол поворота
-        );
+        if (!isDestroyed) {
+            batch.draw(
+                    regions[frame],
+                    getLeft(), getBottom(), // точка отрисовки
+                    halfWidth, halfHeight, // точка вращения
+                    getWidth(), getHeight(),
+                    scale, scale, // масштаб по x и y
+                    angle // угол поворота
+            );
+        }
     }
 
     public void destroy() {

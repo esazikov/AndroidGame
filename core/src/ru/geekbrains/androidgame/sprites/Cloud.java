@@ -15,13 +15,13 @@ public class Cloud extends Sprite {
 
     public Cloud(TextureRegion region) {
         super(region);
-        v.set(Rnd.nextFloat(-0.005f, 0.005f), Rnd.nextFloat(-0.5f, -0.1f));
+        v.set(Rnd.nextFloat(-0.005f, 0.005f), Rnd.nextFloat(-0.2f, -0.1f));
         setHeightProportion(Rnd.nextFloat(0.1f, 0.2f));
     }
 
     public Cloud(TextureAtlas atlas) {
         super(atlas.findRegion("cloud"));
-        v.set(Rnd.nextFloat(-0.005f, 0.005f), Rnd.nextFloat(-0.5f, -0.1f));
+        v.set(Rnd.nextFloat(-0.005f, 0.005f), Rnd.nextFloat(-0.2f, -0.1f));
         setHeightProportion(Rnd.nextFloat(0.01f, 0.02f));
     }
 
