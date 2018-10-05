@@ -2,7 +2,9 @@ package ru.geekbrains.androidgame.screen;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -14,9 +16,13 @@ import java.util.Random;
 import ru.geekbrains.androidgame.base.BaseScreen;
 import ru.geekbrains.androidgame.math.Rect;
 import ru.geekbrains.androidgame.pool.BulletPool;
-import ru.geekbrains.androidgame.sprites.AirCraft;
+import ru.geekbrains.androidgame.pool.EnemyPool;
+import ru.geekbrains.androidgame.pool.ExplosionPool;
+import ru.geekbrains.androidgame.sprites.Explosion;
+import ru.geekbrains.androidgame.sprites.MyAirCraft;
 import ru.geekbrains.androidgame.sprites.Background;
 import ru.geekbrains.androidgame.sprites.Cloud;
+import ru.geekbrains.androidgame.utils.EnemiesEmitter;
 import ru.geekbrains.androidgame.utils.Regions;
 
 
@@ -27,7 +33,7 @@ public class GameScreen extends BaseScreen {
     Background background;
     Texture bg;
     TextureAtlas atlas;
-    AirCraft airCraft;
+    MyAirCraft myAirCraft;
     BulletPool bulletPool;
 
 
@@ -35,7 +41,14 @@ public class GameScreen extends BaseScreen {
     TextureRegion[] cloudTextures;
     Random random = new Random();
 
-    Music musicGame = Gdx.audio.newMusic(Gdx.files.internal("sound/game.mp3"));
+    Music musicGame;
+    Sound myShootSound;
+    Sound enemyShootSound;
+    Sound explosionSound;
+
+    EnemyPool enemyPool;
+    EnemiesEmitter enemiesEmitter;
+    ExplosionPool explosionPool;
 
     public GameScreen(Game game) {
         super(game);
@@ -53,7 +66,16 @@ public class GameScreen extends BaseScreen {
             cloud[i] = new Cloud(cloudTextures[random.nextInt(4)]);
         }
         bulletPool = new BulletPool();
-        airCraft = new AirCraft(atlas, bulletPool);
+        myShootSound = Gdx.audio.newSound(Gdx.files.internal("sound/gun5.wav"));
+       // myShootSound.setVolume();
+        enemyShootSound = Gdx.audio.newSound(Gdx.files.internal("sound/gun5.wav"));
+        explosionSound = Gdx.audio.newSound(Gdx.files.internal("sound/explosions.mp3"));
+        myAirCraft = new MyAirCraft(atlas, bulletPool, myShootSound);
+        enemyPool = new EnemyPool(bulletPool, enemyShootSound, myAirCraft, worldBounds);
+        enemiesEmitter = new EnemiesEmitter(enemyPool, atlas, worldBounds);
+        explosionPool = new ExplosionPool(atlas, explosionSound);
+        musicGame = Gdx.audio.newMusic(Gdx.files.internal("sound/game.mp3"));
+        musicGame.setLooping(true);
         musicGame.play();
     }
 
@@ -70,8 +92,11 @@ public class GameScreen extends BaseScreen {
         for (int i = 0; i < cloud.length; i++) {
             cloud[i].update(delta);
         }
-        airCraft.update(delta);
+        myAirCraft.update(delta);
         bulletPool.updateActiveObjects(delta);
+        enemyPool.updateActiveObjects(delta);
+        enemiesEmitter.generateEnemies(delta);
+        explosionPool.updateActiveObjects(delta);
     }
 
     public void checkCollisions() {
@@ -80,7 +105,8 @@ public class GameScreen extends BaseScreen {
 
     public void deleteAllDestroyed() {
         bulletPool.freeAllDestroyedActiveObjects();
-
+        enemyPool.freeAllDestroyedActiveObjects();
+        explosionPool.freeAllDestroyedActiveObjects();
     }
 
     public void draw() {
@@ -91,8 +117,10 @@ public class GameScreen extends BaseScreen {
         for (int i = 0; i < cloud.length; i++) {
             cloud[i].draw(batch);
         }
-        airCraft.draw(batch);
+        myAirCraft.draw(batch);
         bulletPool.drawActiveObjects(batch);
+        enemyPool.drawActiveObjects(batch);
+        explosionPool.drawActiveObjects(batch);
         batch.end();
     }
 
@@ -103,7 +131,7 @@ public class GameScreen extends BaseScreen {
         for (int i = 0; i < cloud.length; i++) {
             cloud[i].resize(worldBounds);
         }
-        airCraft.resize(worldBounds);
+        myAirCraft.resize(worldBounds);
     }
 
     @Override
@@ -111,32 +139,40 @@ public class GameScreen extends BaseScreen {
         bg.dispose();
         atlas.dispose();
         bulletPool.dispose();
-        airCraft.dispose();
+        myAirCraft.dispose();
         musicGame.dispose();
+        enemyPool.dispose();
+        explosionPool.dispose();
         super.dispose();
     }
 
     @Override
     public boolean keyDown(int keycode) {
-        airCraft.keyDown(keycode);
+        switch (keycode) {
+            case Input.Keys.UP:
+                Explosion explosion = explosionPool.obtain();
+                explosion.set(0.15f, worldBounds.pos);
+                break;
+        }
+        myAirCraft.keyDown(keycode);
         return super.keyDown(keycode);
     }
 
     @Override
     public boolean keyUp(int keycode) {
-        airCraft.keyUp(keycode);
+        myAirCraft.keyUp(keycode);
         return super.keyUp(keycode);
     }
 
     @Override
     public boolean touchDown(Vector2 touch, int pointer) {
-        airCraft.touchDown(touch, pointer);
+        myAirCraft.touchDown(touch, pointer);
         return super.touchDown(touch, pointer);
     }
 
     @Override
     public boolean touchUp(Vector2 touch, int pointer) {
-        airCraft.touchUp(touch, pointer);
+        myAirCraft.touchUp(touch, pointer);
         return super.touchUp(touch, pointer);
     }
 }

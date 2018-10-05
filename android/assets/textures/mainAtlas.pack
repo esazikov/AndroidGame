@@ -3,23 +3,58 @@ mainAtlas.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-cloud
+explosion
   rotate: false
-  xy: 1, 303
-  size: 290, 680
-  orig: 290, 680
+  xy: 1, 237
+  size: 1024, 768
+  orig: 1024, 768
+  offset: 0, 0
+  index: -1
+enemyMed
+  rotate: false
+  xy: 1027, 605
+  size: 600, 400
+  orig: 600, 400
+  offset: 0, 0
+  index: -1
+enemyBig
+  rotate: false
+  xy: 1, 69
+  size: 800, 166
+  orig: 800, 166
   offset: 0, 0
   index: -1
 aircraft
   rotate: false
-  xy: 1, 1
+  xy: 1027, 303
   size: 390, 300
   orig: 390, 300
   offset: 0, 0
   index: -1
+cloud
+  rotate: false
+  xy: 1629, 325
+  size: 290, 680
+  orig: 290, 680
+  offset: 0, 0
+  index: -1
+enemy
+  rotate: false
+  xy: 1027, 1
+  size: 390, 300
+  orig: 390, 300
+  offset: 0, 0
+  index: -1
+enemyRocket
+  rotate: false
+  xy: 1921, 855
+  size: 42, 150
+  orig: 42, 150
+  offset: 0, 0
+  index: -1
 bullet
   rotate: false
-  xy: 293, 833
+  xy: 1419, 453
   size: 34, 150
   orig: 34, 150
   offset: 0, 0
