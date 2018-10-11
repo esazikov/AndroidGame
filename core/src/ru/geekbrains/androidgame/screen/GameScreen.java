@@ -10,12 +10,14 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Align;
 
 import java.util.List;
 import java.util.Random;
 
 import ru.geekbrains.androidgame.base.ActionListener;
 import ru.geekbrains.androidgame.base.BaseScreen;
+import ru.geekbrains.androidgame.base.Font;
 import ru.geekbrains.androidgame.math.Rect;
 import ru.geekbrains.androidgame.pool.BulletPool;
 import ru.geekbrains.androidgame.pool.EnemyPool;
@@ -36,10 +38,9 @@ public class GameScreen extends BaseScreen implements ActionListener{
 
     private static final int CLOUD_COUNT = 32;
 
-    @Override
-    public void actionPerformed(Object src) {
-        if (src == buttonNewGame) startNewGame();
-    }
+    private static final String FRAGS = "Frags : ";
+    private static final String HP = "HP : ";
+    private static final String LEVEL = "Level: ";
 
     private enum State { PLAYING, GAME_OVER }
 
@@ -48,7 +49,6 @@ public class GameScreen extends BaseScreen implements ActionListener{
     TextureAtlas atlas;
     MyAirCraft myAirCraft;
     BulletPool bulletPool;
-
 
     Cloud[] cloud;
     TextureRegion[] cloudTextures;
@@ -68,6 +68,13 @@ public class GameScreen extends BaseScreen implements ActionListener{
     MessageGameOver messageGameOver;
 
     ButtonNewGame buttonNewGame;
+
+    int frags;
+
+    Font font;
+    StringBuilder sbFrags = new StringBuilder();
+    StringBuilder sbHP = new StringBuilder();
+    StringBuilder sbLevel = new StringBuilder();
 
     public GameScreen(Game game) {
         super(game);
@@ -97,6 +104,8 @@ public class GameScreen extends BaseScreen implements ActionListener{
         musicGame.play();
         messageGameOver = new MessageGameOver(atlas);
         buttonNewGame = new ButtonNewGame(atlas, this);
+        font = new Font("font/font.fnt", "font/font.png");
+        font.setFontSize(0.02f);
         startNewGame();
     }
 
@@ -122,7 +131,7 @@ public class GameScreen extends BaseScreen implements ActionListener{
             case PLAYING:
                 myAirCraft.update(delta);
                 enemyPool.updateActiveObjects(delta);
-                enemiesEmitter.generateEnemies(delta);
+                enemiesEmitter.generateEnemies(delta, frags);
                 break;
             case GAME_OVER:
                 break;
@@ -156,6 +165,9 @@ public class GameScreen extends BaseScreen implements ActionListener{
                 if (enemy.isBulletCollision(bullet)) {
                     bullet.destroy();
                     enemy.damage(bullet.getDamage());
+                    if (enemy.isDestroyed()) {
+                        frags++;
+                    }
                 }
             }
         }
@@ -194,7 +206,17 @@ public class GameScreen extends BaseScreen implements ActionListener{
             messageGameOver.draw(batch);
             buttonNewGame.draw(batch);
         }
+        printInfo();
         batch.end();
+    }
+
+    private void printInfo() {
+        sbFrags.setLength(0);
+        font.draw(batch, sbFrags.append(FRAGS).append(frags), worldBounds.getLeft(), worldBounds.getTop() - 0.01f, Align.left);
+        sbHP.setLength(0);
+        font.draw(batch, sbHP.append(HP).append(myAirCraft.getHp()), worldBounds.pos.x, worldBounds.getTop() - 0.01f, Align.center);
+        sbLevel.setLength(0);
+        font.draw(batch, sbLevel.append(LEVEL).append(enemiesEmitter.getLevel()), worldBounds.getRight(), worldBounds.getTop() - 0.01f, Align.right);
     }
 
     @Override
@@ -217,6 +239,7 @@ public class GameScreen extends BaseScreen implements ActionListener{
         musicGame.dispose();
         enemyPool.dispose();
         explosionPool.dispose();
+        font.dispose();
         super.dispose();
     }
 
@@ -238,17 +261,19 @@ public class GameScreen extends BaseScreen implements ActionListener{
 
     @Override
     public boolean touchDown(Vector2 touch, int pointer) {
-        if (state == State.PLAYING) {
-            myAirCraft.touchDown(touch, pointer);
-        } else buttonNewGame.touchDown(touch, pointer);
+        myAirCraft.touchDown(touch, pointer);
+        if (state == State.GAME_OVER) {
+            buttonNewGame.touchDown(touch, pointer);
+        }
         return super.touchDown(touch, pointer);
     }
 
     @Override
     public boolean touchUp(Vector2 touch, int pointer) {
-        if (state == State.PLAYING) {
-            myAirCraft.touchUp(touch, pointer);
-        } else buttonNewGame.touchUp(touch, pointer);
+        myAirCraft.touchUp(touch, pointer);
+        if (state == State.GAME_OVER) {
+            buttonNewGame.touchUp(touch, pointer);
+        }
         return super.touchUp(touch, pointer);
     }
 
@@ -258,7 +283,13 @@ public class GameScreen extends BaseScreen implements ActionListener{
         bulletPool.freeAllActiveObjects();
         explosionPool.freeAllActiveObjects();
         enemyPool.freeAllActiveObjects();
+        frags = 0;
+        enemiesEmitter.setLevel(1);
     }
 
+    @Override
+    public void actionPerformed(Object src) {
+        if (src == buttonNewGame) startNewGame();
+    }
 
 }

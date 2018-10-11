@@ -11,7 +11,7 @@ public class ButtonExit extends ScaledTouchUpButton {
     public ButtonExit(TextureAtlas atlas, ActionListener actionListener) {
 
         super(atlas.findRegion("exit"), actionListener, 0.9f);
-        setWidhtProportion(0.15f);
+        setHeightProportion(0.15f);
     }
 
     @Override

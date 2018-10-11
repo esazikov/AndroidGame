@@ -1,11 +1,8 @@
 package ru.geekbrains.androidgame.base;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-
 import ru.geekbrains.androidgame.math.Rect;
 import ru.geekbrains.androidgame.pool.BulletPool;
 import ru.geekbrains.androidgame.pool.ExplosionPool;
@@ -86,7 +83,7 @@ public class AirCraft extends Sprite {
 
     public void damage(int damage) {
         frame = 1;
-        damageAnimateTimer = 0.f;
+        damageAnimateTimer = 0f;
         hp -= damage;
         if (hp <= 0) {
             boom();

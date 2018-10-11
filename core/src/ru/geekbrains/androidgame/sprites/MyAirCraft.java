@@ -22,6 +22,8 @@ public class MyAirCraft extends AirCraft {
     private int leftPointer = INVALID_POINTER;
     private int rightPointer = INVALID_POINTER;
 
+    private boolean isNewGame = false;
+
     public MyAirCraft(TextureAtlas atlas, BulletPool bulletPool, ExplosionPool explosionPool, Sound shootSound) {
         super(atlas.findRegion("aircraft"), 1, 2, 2, bulletPool, explosionPool, shootSound);
         this.bulletRegion = atlas.findRegion("bullet");
@@ -59,8 +61,8 @@ public class MyAirCraft extends AirCraft {
 
     @Override
     public void resize(Rect worldBounds) {
-        setBottom(worldBounds.getBottom() + 0.05f);
         super.resize(worldBounds);
+        setBottom(worldBounds.getBottom() + 0.03f);
     }
 
     public void keyDown(int keycode) {
