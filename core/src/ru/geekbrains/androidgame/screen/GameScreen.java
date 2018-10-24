@@ -119,6 +119,7 @@ public class GameScreen extends BaseScreen implements ActionListener{
     }
 
     public void update(float delta) {
+        background.update(delta);
         for (int i = 0; i < cloud.length; i++) {
             cloud[i].update(delta);
         }

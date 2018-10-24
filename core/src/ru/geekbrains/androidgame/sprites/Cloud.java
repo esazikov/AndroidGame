@@ -19,12 +19,6 @@ public class Cloud extends Sprite {
         setHeightProportion(Rnd.nextFloat(0.1f, 0.2f));
     }
 
-    public Cloud(TextureAtlas atlas) {
-        super(atlas.findRegion("cloud"));
-        v.set(Rnd.nextFloat(-0.005f, 0.005f), Rnd.nextFloat(-0.2f, -0.1f));
-        setHeightProportion(Rnd.nextFloat(0.01f, 0.02f));
-    }
-
     @Override
     public void update(float delta) {
         pos.mulAdd(v, delta);
